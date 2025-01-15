@@ -1,5 +1,6 @@
 package net.engineeringdigest.journalApp.entity;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -18,6 +19,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
+
+    @Id  // Automatically generated ObjectId by MongoDB
+    private ObjectId id;
 
     @NotEmpty(message = "Please enter your Name!")
     @Size(min = 3, max = 30, message = "Name must be between 3 and 30 characters!")

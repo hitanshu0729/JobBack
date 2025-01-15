@@ -77,6 +77,12 @@ public class UserService {
         }
     }
 
+    public ResponseEntity<?> logout () {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Logged out successfully");
+        return ResponseEntity.ok().header("Set-Cookie", "token=; HttpOnly; Path=/; Max-Age=0").body(response);
+    }
+
     public void saveUser(User user) {
         userRepository.save(user);
     }

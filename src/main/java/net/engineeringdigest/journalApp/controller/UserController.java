@@ -3,6 +3,7 @@ package net.engineeringdigest.journalApp.controller;
 import net.engineeringdigest.journalApp.repository.UserRepository;
 import net.engineeringdigest.journalApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,6 +15,12 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+   @GetMapping("/logout")
+    public ResponseEntity<?> logout() {
+        return userService.logout();
+    }
+
 
 //    @PutMapping
 //    public ResponseEntity<?> updateUser(@RequestBody User user) {
