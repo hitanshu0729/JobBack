@@ -38,18 +38,7 @@ public class PublicController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
-        try{
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
-            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
-            String jwt = jwtUtil.generateToken(userDetails.getUsername());
-            return ResponseEntity.ok()
-                    .header("Set-Cookie", "token=" + jwt + "; HttpOnly; Path=/; Max-Age=3600")
-                    .body(jwt);
-        }catch (Exception e){
-            log.error("Exception occurred while createAuthenticationToken ");
-            return new ResponseEntity<>("Incorrect username or password", HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<?> login(@RequestBody User user) {
+       return userService.login(user,"Logged in successfully");
     }
 }

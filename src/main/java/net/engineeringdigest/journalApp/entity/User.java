@@ -19,9 +19,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class User {
 
-    @Id
-    private String id;
-
     @NotEmpty(message = "Please enter your Name!")
     @Size(min = 3, max = 30, message = "Name must be between 3 and 30 characters!")
     private String name;
@@ -43,4 +40,10 @@ public class User {
 
     @CreatedDate
     private LocalDateTime createdAt;
+
+    public User(String email, String password, String role) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
 }
