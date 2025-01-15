@@ -1,20 +1,18 @@
 package net.engineeringdigest.journalApp.service;
 
 import lombok.extern.slf4j.Slf4j;
-import net.engineeringdigest.journalApp.controller.JournalEntryController;
 import net.engineeringdigest.journalApp.entity.User;
 import net.engineeringdigest.journalApp.repository.UserRepository;
 import org.bson.types.ObjectId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -24,28 +22,31 @@ public class UserService {
     private UserRepository userRepository;
 
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-    public boolean saveNewUser(User user) {
+    public ResponseEntity<Map<String, Object>> saveNewUser(User user) {
+        Map<String, Object> response = new HashMap<>();
         try {
+
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setRoles(Arrays.asList("USER"));
+            if(user.getEmail()==null || user.getPhone()==null || user.getRole()==null) {
+                throw new IllegalArgumentException("User must have email, phone, and role");
+            }
+            if(userRepository.findByEmail(user.getEmail())!=null) {
+                throw new IllegalArgumentException("User with this email already exists");
+            }
+            if (user.getRole().contains("Job Seeker") || user.getRole().contains("Employer")) {
             userRepository.save(user);
-            return true;
+            } else {
+                throw new IllegalArgumentException("User must have either 'Job Seeker' or 'Employer' role");
+            }
+            response.put("message", "User saved successfully");
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            log.error("hahahhahhahahahah");
-            log.warn("hahahhahhahahahah");
-            log.info("hahahhahhahahahah");
-            log.debug("hahahhahhahahahah");
-            log.trace("hahahhahhahahahah");
-            return false;
+            log.error("Exception occurred while saving new user: ", e);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
         }
     }
 
-    public void saveAdmin(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Arrays.asList("USER", "ADMIN"));
-        userRepository.save(user);
-    }
 
     public void saveUser(User user) {
         userRepository.save(user);
@@ -63,7 +64,7 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public User findByUserName(String userName) {
-        return userRepository.findByUserName(userName);
+    public User findByEmail(String userName) {
+        return userRepository.findByEmail(userName);
     }
 }

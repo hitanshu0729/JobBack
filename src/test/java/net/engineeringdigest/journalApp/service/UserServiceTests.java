@@ -24,13 +24,6 @@ public class UserServiceTests {
 
     @Disabled
     @ParameterizedTest
-    @ArgumentsSource(UserArgumentsProvider.class)
-    public void testSaveNewUser(User user) {
-        assertTrue(userService.saveNewUser(user));
-    }
-
-    @Disabled
-    @ParameterizedTest
     @CsvSource({
             "1,1,2",
             "2,10,12",

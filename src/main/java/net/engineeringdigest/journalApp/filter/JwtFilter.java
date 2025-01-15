@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-public class JwtFilter  extends OncePerRequestFilter{
+public class JwtFilter  extends OncePerRequestFilter {
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -44,9 +44,9 @@ public class JwtFilter  extends OncePerRequestFilter{
 
         // Process the token if available
         if (jwt != null) {
-            String username = jwtUtil.extractUsername(jwt);
-            if (username != null && jwtUtil.validateToken(jwt)) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            String email = jwtUtil.extractEmail(jwt); // Extract email from JWT
+            if (email != null && jwtUtil.validateToken(jwt)) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email); // Use email to load UserDetails
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(auth);
@@ -56,5 +56,4 @@ public class JwtFilter  extends OncePerRequestFilter{
         // Proceed with the filter chain
         chain.doFilter(request, response);
     }
-
 }

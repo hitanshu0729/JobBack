@@ -1,15 +1,16 @@
 package net.engineeringdigest.journalApp.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
-import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import org.springframework.data.annotation.Id;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Document(collection = "users")
 @Data
@@ -19,15 +20,27 @@ import java.util.List;
 public class User {
 
     @Id
-    private ObjectId id;
-    @Indexed(unique = true)
-    @NonNull
-    private String userName;
+    private String id;
+
+    @NotEmpty(message = "Please enter your Name!")
+    @Size(min = 3, max = 30, message = "Name must be between 3 and 30 characters!")
+    private String name;
+
+    @NotEmpty(message = "Please enter your Email!")
+    @Email(message = "Please provide a valid Email!")
+    @Indexed(unique = true)  // Ensures the email field is unique
     private String email;
-    private boolean sentimentAnalysis;
-    @NonNull
+
+    @NotNull(message = "Please enter your Phone Number!")
+    private Long phone;
+
+    @NotEmpty(message = "Please provide a Password!")
+    @Size(min = 8, max = 32, message = "Password must be between 8 and 32 characters!")
     private String password;
-    @DBRef
-    private List<JournalEntry> journalEntries = new ArrayList<>();
-    private List<String> roles;
+
+    @NotEmpty(message = "Please select a role")
+    private String role;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
 }
