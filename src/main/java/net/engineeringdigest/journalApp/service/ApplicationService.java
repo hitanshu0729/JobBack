@@ -83,10 +83,6 @@ public class ApplicationService {
                     address == null || address.trim().isEmpty()) {
                 return ResponseEntity.badRequest().body("Please fill all fields");
             }
-            if (!phone.matches("\\d+")) {
-                return ResponseEntity.badRequest().body("Invalid phone number format");
-            }
-
             Job job = jobRepository.findById(jobId).orElse(null);
             if(job == null){
                 return ResponseEntity.badRequest().body("Job not found");
@@ -103,18 +99,20 @@ public class ApplicationService {
             }
 
             Application application = new Application();
+//            application.setId(new ObjectId());
             application.setName(name);
             application.setEmail(email);
             application.setCoverLetter(coverLetter);
-            application.setPhone(Long.parseLong(phone));
+            application.setPhone(Long.parseLong(phone.trim()));
             application.setAddress(address);
             application.setResume(new Application.Resume(publicId, secureUrl));
             application.setApplicant(user);
             application.setEmployer(userRepository.findById(job.getPostedBy()).orElse(null));
+            log.warn("Application: " + application);
             applicationRepository.save(application);
         } catch (Exception e) {
             log.error("An unexpected error occurred while processing the application: ", e);
-            return ResponseEntity.badRequest().body("An unexpected error occurred while processing the application");
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
         return ResponseEntity.ok("Application submitted successfully");
     }

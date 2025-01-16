@@ -42,7 +42,8 @@ public class ApplicationController {
         if (resume == null || resume.isEmpty()) {
             return ResponseEntity.badRequest().body("Resume File Required!");
         }
-        return applicationService.createApplication(resume, name, email, coverLetter, phone, address, new ObjectId(jobId));
+        ObjectId id = new ObjectId(jobId.trim().split(",")[0]);
+        return applicationService.createApplication(resume, name, email, coverLetter, phone, address, id);
     }
 
 }
