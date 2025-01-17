@@ -69,7 +69,7 @@ public class UserService {
                 response.put("message", message);
             }
             return ResponseEntity.ok()
-                    .header("Set-Cookie", "token=" + jwt + "; HttpOnly; Path=/; Max-Age=3600")
+                    .header("Set-Cookie", "token=" + jwt + ";Path=/; Max-Age=360000")
                     .body(response);
         }catch (Exception e){
             log.error("Exception occurred while createAuthenticationToken ");
@@ -80,7 +80,7 @@ public class UserService {
     public ResponseEntity<?> logout () {
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Logged out successfully");
-        return ResponseEntity.ok().header("Set-Cookie", "token=; HttpOnly; Path=/; Max-Age=0").body(response);
+        return ResponseEntity.ok().header("Set-Cookie", "token=; Path=/; Max-Age=0").body(response);
     }
 
     public void saveUser(User user) {
